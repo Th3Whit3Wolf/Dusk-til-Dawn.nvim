@@ -3,6 +3,10 @@ local hours = tonumber(vim.fn.strftime("%H"))
 local mins = tonumber(vim.fn.strftime("%M"))
 local sec = tonumber(vim.fn.strftime("%S"))
 
+if vim.g.dusk_til_dawn_loaded == 1 then
+    return
+end
+
 vim.g.dusk_til_dawn_loaded = 1
 
 -- Get morning and night times
