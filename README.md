@@ -10,7 +10,7 @@ Automatically change colorscheme based on time
 Plug 'Th3Whit3Wolf/Dusk-til-Dawn.nvim'
 
 " And then somewhere in your init.vim
-lua require'Dusk-til-Dawn
+lua require'Dusk-til-Dawn'
 ```
 
 ### Minpac
@@ -19,7 +19,7 @@ lua require'Dusk-til-Dawn
 call minpac#add('Th3Whit3Wolf/Dusk-til-Dawn.nvim')
 
 " And then somewhere in your init.vim
-lua require'Dusk-til-Dawn
+lua require'Dusk-til-Dawn'
 ```
 
 ### Vim Packages
@@ -39,7 +39,7 @@ packadd! Dusk-til-Dawn.nvim
 
 ```vim
 " And then somewhere in your init.vim after the above command
-lua require'Dusk-til-Dawn
+lua require'Dusk-til-Dawn'
 ```
 
 ## Configuration
