@@ -53,6 +53,12 @@ lua require'Dusk-til-Dawn
 | `g:dusk_til_dawn_light_luafile` | Sets light theme (from luafile) | nil       |
 | `g:dusk_til_dawn_dark_luafile`  | Sets dark theme (from luafile)  | nil       |
 
+## Commands
+
+|      Commands     |      Function       |
+| :---------------- | :------------------ |
+| ToggleColorscheme | Toggles colorscheme |
+
 ### When would I use a luafile for colorschme
 
 Some lua colorschemes require this to reload
