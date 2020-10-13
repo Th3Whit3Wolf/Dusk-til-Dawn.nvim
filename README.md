@@ -59,11 +59,12 @@ lua require'Dusk-til-Dawn'
 | :---------------- | :------------------ |
 | ToggleColorscheme | Toggles colorscheme |
 
-### When would I use a luafile for colorschme
+### When would I use a luafile for colorscheme
 
 Some lua colorschemes require this to reload
 
 - [Space Nvim Theme](https://github.com/Th3Whit3Wolf/space-nvim-theme)
+- [Gruvbox.lua](https://github.com/samlwood/vis-gruvbox/blob/master/gruvbox.lua)
 
 ## NOTE
 
