@@ -50,37 +50,40 @@ function changeColors()
     end
 end
 
-local s = (60 - sec) * 1000
-local m
-local h
+local function nap()
+    local s = (60 - sec) * 1000
+    local m
+    local h
 
-if hours >= morning and hours <= night then
-    if (mins + 1) < 60 then
-        m = (mins + 1) * 60000
+    if hours >= morning and hours <= night then
+        if (mins + 1) < 60 then
+            m = (mins + 1) * 60000
+        else
+            m = 0
+        end
+        if (hours + 1) < night then
+            h = (hours + 1) * 3600000
+        else
+            h = 0
+        end
+        lightColors()
     else
-        m = 0
+        if (mins + 1) < 60 then
+            m = (mins + 1) * 60000
+        else
+            m = 0
+        end
+        if (hours + 1) < morning then
+            h = (hours + 1) * 3600000
+        else
+            h = 0
+        end
+        darkColors()
     end
-    if (hours + 1) < night then
-        h = (hours + 1) * 3600000
-    else
-        h = 0
-    end
-    lightColors()
-else
-    if (mins + 1) < 60 then
-        m = (mins + 1) * 60000
-    else
-        m = 0
-    end
-    if (hours + 1) < morning then
-        h = (hours + 1) * 3600000
-    else
-        h = 0
-    end
-    darkColors()
+    return  h + m + s
 end
 
-local sleep_now = h + m + s
+local sleep_now = nap()
 
 local sleep_regular = (night - morning) * 3600000
 -- Create a timer handle (implementation detail: uv_timer_t).
