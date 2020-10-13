@@ -73,4 +73,4 @@ Some lua colorschemes require this to reload
 
 ## Special Thanks
 
-- [Jonathan Stoler](https://github.com/jonstoler) - I've been using a modified version of their [werewolf.vim](https://github.com/jonstoler/werewolf.vim) to change colorschems for a while and inspired me to make this plugin
+- [Jonathan Stoler](https://github.com/jonstoler) - I've been using a modified version of their [werewolf.vim](https://github.com/jonstoler/werewolf.vim) to change colorschemes for a while and inspired me to make this plugin.
