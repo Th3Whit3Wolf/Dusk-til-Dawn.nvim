@@ -13,9 +13,9 @@ for k,_ in pairs(paths) do
     end
     for i=1, #dirs do
         if found then break end
-        if dirs[#dirs + 1 - i] == 'Dusk-till-Dawn.nvim' then
+        if dirs[#dirs + 1 - i] == 'Dusk-til-Dawn.nvim' then
             local str = table.concat(dirs , '/' , 1 , #dirs + 1 - i )
-            vim.cmd("luafile " .. str .. "/lua/lib/lib.lua")
+            vim.cmd("luafile " .. str .. "/lua/lib/Dusk-til-Dawn.lua")
             vim.cmd("command! ToggleColorscheme lua changeColors()")
             found = true
         end
