@@ -44,14 +44,15 @@ lua require'Dusk-til-Dawn'
 
 ## Configuration
 
-|          Configuration          |             Function            |  Default  |
-| :------------------------------ | :------------------------------ | :-------- |
-| `g:dusk_til_dawn_morning`       | Sets time when day begins       | 7  (7 am) |
-| `g:dusk_til_dawn_night`         | Sets time when day ends         | 19 (7 pm) |
-| `g:dusk_til_dawn_light_theme`   | Sets light theme                | morning   |
-| `g:dusk_til_dawn_dark_theme`    | Sets dark theme                 | evening   |
-| `g:dusk_til_dawn_light_luafile` | Sets light theme (from luafile) | nil       |
-| `g:dusk_til_dawn_dark_luafile`  | Sets dark theme (from luafile)  | nil       |
+|          Configuration          |               Function              |  Default  |
+| :------------------------------ | :---------------------------------- | :-------- |
+| `g:dusk_til_dawn_morning`       | Sets time when day begins           | 7  (7 am) |
+| `g:dusk_til_dawn_night`         | Sets time when day ends             | 19 (7 pm) |
+| `g:dusk_til_dawn_light_theme`   | Sets light theme                    | morning   |
+| `g:dusk_til_dawn_dark_theme`    | Sets dark theme                     | evening   |
+| `g:dusk_til_dawn_light_luafile` | Sets light theme (from luafile)     | nil       |
+| `g:dusk_til_dawn_dark_luafile`  | Sets dark theme (from luafile)      | nil       |
+| `g:dusk_til_dawn_debug`         | Turns on debug mode (strobe effect) | false     |
 
 ## Commands
 
@@ -75,3 +76,4 @@ Some lua colorschemes require this to reload
 ## Special Thanks
 
 - [Jonathan Stoler](https://github.com/jonstoler) - I've been using a modified version of their [werewolf.vim](https://github.com/jonstoler/werewolf.vim) to change colorschemes for a while and inspired me to make this plugin.
+- [ms-jpq](https://github.com/ms-jpq) - Their [Neovim Async Tutorial](https://ms-jpq.github.io/neovim-async-tutorial/) article was a major help in refactor my plugin.
