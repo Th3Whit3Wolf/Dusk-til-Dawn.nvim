@@ -18,29 +18,17 @@ end)()
 
 -- Get morning and night times
 local morning = (function()
-    if debug then
-        return 10
+    if vim.g.dusk_til_dawn_morning ~= nil then
+        return vim.g.dusk_til_dawn_morning
     else
-        return (function()
-            if vim.g.dusk_til_dawn_morning ~= nil then
-                return vim.g.dusk_til_dawn_morning
-            else
-                return 7
-            end
-        end)()
+        return 7
     end
 end)()
 local night = (function()
-    if debug then
-        return 10
+    if vim.g.dusk_til_dawn_night ~= nil then
+        return vim.g.dusk_til_dawn_night
     else
-        return (function()
-            if vim.g.dusk_til_dawn_night ~= nil then
-                return vim.g.dusk_til_dawn_night
-            else
-                return 7
-            end
-        end)()
+        return 7
     end
 end)()
 
@@ -76,30 +64,12 @@ local dark_luafile_colorscheme = (function()
     end
 end)()
 
-local function currentTime()
-    local hours = (function()
-        if debug == true then
-            return 10
-        else
-            return tonumber(os.date("%H"))
-        end
-    end)()
-    local mins = (function()
-        if debug == true then
-            return 59
-        else
-            return tonumber(os.date("%M"))
-        end
-    end)()
-    local secs = (function()
-        if debug == true then
-            return 58
-        else
-            return tonumber(os.date("%S"))
-        end
-    end)()
+function currentTime()
+    local hours = tonumber(os.date("%H"))
+    local mins = tonumber(os.date("%M"))
+    local secs = tonumber(os.date("%S"))
 
-    return hours, mins, secs
+    return (hours * 3600) + (mins * 60) + secs
 end
 
 --- Set the light colorscheme
@@ -141,48 +111,36 @@ local function initColorscheme()
 end
 
 local function nap_time()
-    local hours, mins, sec = currentTime()
-    local s = (60 - sec) * 1000
-    local m
-    local h
+    local morn = morning * 3600
+    local nigh = night * 3600
+    local ct = currentTime()
 
-    if hours >= morning and hours <= night then
-        if (mins + 1) < 60 then
-            m = (mins + 1) * 60000
+    local count_down = (function()
+        if ct < morn then
+            return ct - morn
+        elseif ct >= morn and ct < nigh then
+            return nigh - ct
         else
-            m = 0
+            -- 86400 is amount a seconds in a day
+            return (86400 - ct) + morn
         end
-        if (hours + 1) < night then
-            h = (hours + 1) * 3600000
-        else
-            h = 0
-        end
-        if debug then
-            print('Colorscheme Change in ' .. h .. 'h ' .. m .. 'm ' .. s .. 's')
-        end
-    else
-        if (mins + 1) < 60 then
-            m = (mins + 1) * 60000
-        else
-            m = 0
-        end
-        if (hours + 1) < morning then
-            h = (hours + 1) * 3600000
-        else
-            h = 0
-        end
-        if debug then
-            print('Colorscheme Change in ' .. h .. 'h ' .. m .. 'm ' .. s .. 's')
-        end
+    end)()
+
+    if debug then
+        print('Colorscheme Change in ' .. math.floor(count_down / 3600) .. 'hours(s) ' ..
+                  math.floor(count_down % 3600 / 60) .. 'minute(s) ' .. math.floor(count_down % 3600 % 60) ..
+                  'second(s)')
     end
-    return h + m + s
+
+    -- Timer takes number in milliseconds
+    return count_down * 1000
 end
 
 -- #################### ############ ####################
 -- #################### Async Region ####################
 -- #################### ############ ####################
 
--- use with wrap
+--- use with wrap
 local wrapHelper = function(func, callback)
     assert(type(func) == "function", "type error :: expected func")
     local thread = co.create(func)
@@ -201,7 +159,7 @@ local wrapHelper = function(func, callback)
     step()
 end
 
--- use with wrap, creates thunk factory
+--- use with wrap, creates thunk factory
 local wrap = function(func)
     assert(type(func) == "function", "type error :: expected func")
     local factory = function(...)
@@ -215,7 +173,7 @@ local wrap = function(func)
     return factory
 end
 
--- sugar over coroutine
+--- sugar over coroutine
 local await = function(defer)
     assert(type(defer) == "function", "type error :: expected func")
     return co.yield(defer)
@@ -224,14 +182,20 @@ end
 --- Create a timer that changes at morning and night
 local timer = wrap(function(callback)
     -- wait til next time of day change
-    local tm = nap_time()
+    local tm = (function()
+        if debug == true then
+            return 1000
+        else
+            return nap_time()
+        end
+    end)()
+
     local t = uv.new_timer()
     uv.timer_start(t, tm, 0, function()
         uv.timer_stop(t)
         uv.close(t)
         callback()
     end)
-
 end)
 
 -- #################### ############ ####################
@@ -243,9 +207,11 @@ local main_loop = function(f)
     vim.schedule(f)
 end
 
-local textlock_succ = function()
+--- Set initial colorscheme, and change colorscheme at day and night
+local colorschemeManager = function()
     return wrap(wrapHelper)(function()
         initColorscheme()
+        nap_time()
         while true do
             await(timer())
             await(main_loop)
@@ -254,4 +220,5 @@ local textlock_succ = function()
     end)
 end
 
-textlock_succ()()
+colorschemeManager()()
+
