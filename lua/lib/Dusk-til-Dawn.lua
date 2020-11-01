@@ -28,7 +28,7 @@ local night = (function()
     if vim.g.dusk_til_dawn_night ~= nil then
         return vim.g.dusk_til_dawn_night
     else
-        return 7
+        return 19
     end
 end)()
 
