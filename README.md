@@ -10,7 +10,7 @@ Automatically change colorscheme based on time
 Plug 'Th3Whit3Wolf/Dusk-til-Dawn.nvim'
 
 " And then somewhere in your init.vim
-lua require'Dusk-til-Dawn'
+lua require'Dusk-til-Dawn'.colorschemeManager()()
 ```
 
 ### Minpac
@@ -19,7 +19,7 @@ lua require'Dusk-til-Dawn'
 call minpac#add('Th3Whit3Wolf/Dusk-til-Dawn.nvim')
 
 " And then somewhere in your init.vim
-lua require'Dusk-til-Dawn'
+lua require'Dusk-til-Dawn'.colorschemeManager()()
 ```
 
 ### Vim Packages
@@ -27,19 +27,15 @@ lua require'Dusk-til-Dawn'
 In the terminal execute this command.
 
 ```sh
-cd ~/.local/share/nvim/site/pack/opt/
+cd ~/.local/share/nvim/site/pack/start/
 git clone https://github.com/Th3Whit3Wolf/Dusk-til-Dawn.nvim
 ```
 
 In your `init.vim` add the following
 
 ```vim
-packadd! Dusk-til-Dawn.nvim
-```
-
-```vim
 " And then somewhere in your init.vim after the above command
-lua require'Dusk-til-Dawn'
+lua require'Dusk-til-Dawn'.colorschemeManager()()
 ```
 
 ## Configuration
@@ -50,27 +46,17 @@ lua require'Dusk-til-Dawn'
 | `g:dusk_til_dawn_night`         | Sets time when day ends             | 19 (7 pm) |
 | `g:dusk_til_dawn_light_theme`   | Sets light theme                    | morning   |
 | `g:dusk_til_dawn_dark_theme`    | Sets dark theme                     | evening   |
-| `g:dusk_til_dawn_light_luafile` | Sets light theme (from luafile)     | nil       |
-| `g:dusk_til_dawn_dark_luafile`  | Sets dark theme (from luafile)      | nil       |
 | `g:dusk_til_dawn_debug`         | Turns on debug mode (strobe effect) | false     |
 
 ## Commands
 
 |      Commands     |      Function       |
 | :---------------- | :------------------ |
-| ToggleColorscheme | Toggles colorscheme |
-
-### When would I use a luafile for colorscheme
-
-Some lua colorschemes require this to reload
-
-- [Space Nvim Theme](https://github.com/Th3Whit3Wolf/space-nvim-theme)
-- [Gruvbox.lua](https://github.com/samlwood/vis-gruvbox/blob/master/gruvbox.lua)
+| ChangeColor       | Toggles colorscheme |
 
 ## NOTE
 
 - Vim is not supported because the plugin is written in lua.
-- If you set a theme and luafile the luafile will be preferred.
 - Will set colorscheme on initialization (no need to use `colorscheme x` just set colorscheme with `g:dusk_til_dawn_light_theme` and `g:dusk_til_dawn_dark_theme`)
 
 ## Special Thanks
