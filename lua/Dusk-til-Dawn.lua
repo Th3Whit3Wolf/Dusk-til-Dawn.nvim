@@ -78,7 +78,7 @@ end
 
 function M.initColorscheme()
     local hours = tonumber(os.date("%H"))
-    if hours >= morning and hours <= night then
+    if hours >= morning and hours < night then
         lightColors()
     else
         darkColors()
