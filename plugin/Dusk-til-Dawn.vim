@@ -11,6 +11,8 @@ if !has('nvim')
     finish
 endif
 
+lua require 'Dusk-til-Dawn'.colorschemeManager()()
+
 let g:dusk_til_dawn_loaded = 1
 
 command! ChangeColor lua require 'Dusk-til-Dawn'.changeColors()
