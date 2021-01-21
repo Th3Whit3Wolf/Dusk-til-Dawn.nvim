@@ -4,9 +4,26 @@ local co = coroutine
 
 local M = {}
 
+local function readSwayColordTmp(file)
+    local f = assert(io.open("/tmp/sway-colord/" .., "rb"))
+    local time = f:read("*all")
+    f:close()
+    pattern="(%d+):(%d+):(%d+)"
+    hour,min,sec=time:match(pattern)
+    return hour,min,sec
+end
+
 local debug = (function()
     if vim.g.dusk_til_dawn_debug ~= nil then
         return vim.g.dusk_til_dawn_debug
+    else
+        return false
+    end
+end)()
+
+local sway_colord = (function()
+    if vim.g.dusk_til_dawn_sway_colord ~= nil then
+        return vim.g.dusk_til_dawn_sway_colord
     else
         return false
     end
@@ -88,19 +105,54 @@ function M.initColorscheme()
     end
 end
 
-local function nap_time()
+local function toSecs(hours, minutes,seconds)
+    return (hours * 3600) + (minutes * 60) + seconds
+end
+
+local function nap_timeRigid()
     local morn = morning * 3600
     local nigh = night * 3600
     local ct = currentTime()
 
     local count_down = (function()
         if ct < morn then
-            return ct - morn
+            return morn - ct
         elseif ct >= morn and ct < nigh then
             return nigh - ct
         else
             -- 86400 is amount a seconds in a day
             return (86400 - ct) + morn
+        end
+    end)()
+
+    if debug then
+        print('Colorscheme Change in ' .. math.floor(count_down / 3600) .. 'hours(s) ' ..
+                  math.floor(count_down % 3600 / 60) .. 'minute(s) ' .. math.floor(count_down % 3600 % 60) ..
+                  'second(s)')
+    end
+
+    -- Timer takes number in milliseconds
+    return count_down * 1000
+end
+
+local function nap_timeSwayColord()
+    local sunrise_h, sunrise_m,sunrise_s = readSwayColordTmp('dawn')
+    local sunrise_secs = toSecs(sunrise_h, sunrise_m, sunrise_s)
+    local sunset_h, sunset_m,sunset_s = readSwayColordTmp('dusk')
+    local sunset_secs = toSecs(sunset_h, sunset_m, sunset_s)
+    local current_h = tonumber(os.date("%H"))
+    local current_m = tonumber(os.date("%M"))
+    local current_s = tonumber(os.date("%S"))
+    local now = toSecs(current_h, current_m, current_s)
+
+    local count_down = (function()
+        if current_h < sunrise_h then
+            return sunrise_secs - now
+        elseif current_h >= sunrise_h and current_h < sunset_h then
+            return sunset_secs - now
+        else
+            -- 86400 is amount a seconds in a day
+            return (86400 - now) + sunrise_secs
         end
     end)()
 
@@ -164,7 +216,11 @@ local timer = wrap(function(callback)
         if debug == true then
             return 1000
         else
-            return nap_time()
+            if sway_colord ~= true
+                return nap_timeRigid()
+            else
+                return nap_timeSwayColord()
+            end
         end
     end)()
 
