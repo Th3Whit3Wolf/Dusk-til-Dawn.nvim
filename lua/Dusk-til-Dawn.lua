@@ -5,7 +5,7 @@ local co = coroutine
 local M = {}
 
 local function readSwayColordTmp(file)
-    local f = assert(io.open("/tmp/sway-colord/" .., "rb"))
+    local f = assert(io.open("/tmp/sway-colord/" .. file, "rb"))
     local time = f:read("*all")
     f:close()
     pattern="(%d+):(%d+):(%d+)"
@@ -216,7 +216,7 @@ local timer = wrap(function(callback)
         if debug == true then
             return 1000
         else
-            if sway_colord ~= true
+            if sway_colord ~= true then
                 return nap_timeRigid()
             else
                 return nap_timeSwayColord()
