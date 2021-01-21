@@ -4,15 +4,6 @@ local co = coroutine
 
 local M = {}
 
-local function readSwayColordTmp(file)
-    local f = assert(io.open("/tmp/sway-colord/" .. file, "rb"))
-    local time = f:read("*all")
-    f:close()
-    pattern="(%d+):(%d+):(%d+)"
-    hour,min,sec=time:match(pattern)
-    return hour,min,sec
-end
-
 local debug = (function()
     if vim.g.dusk_til_dawn_debug ~= nil then
         return vim.g.dusk_til_dawn_debug
@@ -61,12 +52,30 @@ local dark_theme_colorscheme = (function()
     end
 end)()
 
-function currentTime()
+function M.currentTime()
     local hours = tonumber(os.date("%H"))
     local mins = tonumber(os.date("%M"))
     local secs = tonumber(os.date("%S"))
 
     return (hours * 3600) + (mins * 60) + secs
+end
+
+function M.readSwayColordDawn()
+    local f = assert(io.open("/tmp/sway-colord/dawn", "rb"))
+    local time = f:read("*all")
+    f:close()
+    pattern="(%d+):(%d+):(%d+)"
+    hour,min,sec=time:match(pattern)
+    return (tonumber(hour) * 3600) + (tonumber(min) * 60) + tonumber(sec)
+end
+
+function M.readSwayColordDusk()
+    local f = assert(io.open("/tmp/sway-colord/dusk", "rb"))
+    local time = f:read("*all")
+    f:close()
+    pattern="(%d+):(%d+):(%d+)"
+    hour,min,sec=time:match(pattern)
+    return (tonumber(hour) * 3600) + (tonumber(min) * 60) + tonumber(sec)
 end
 
 --- Set the light colorscheme
@@ -93,15 +102,31 @@ function M.changeColors()
     end
 end
 
-function M.initColorscheme()
-    local hours = tonumber(os.date("%H"))
-    if hours >= morning and hours < night then
-        lightColors()
-    else
-        darkColors()
+-- Runs a function durring the day
+-- and another function durring the night
+function M.day_and_night(day, night)
+    if type(day) ~= 'function' or type(night) ~= 'function' then
+        print('Error: day_and_night takes 2 functions, but received ' .. type(day) .. ' and ' .. type(night) .. '!')
+        return
     end
-    if vim.g.loaded_galaxyline == 1 then
-        require("galaxyline").load_galaxyline()
+    local now = M.currentTime()
+    if sway_colord ~= true then
+        local morn = morning * 3600
+        local nigh = night * 3600
+        
+        if now < morn or now > nigh then
+            night()
+        else
+            day()
+        end
+    else
+        local sunrise = M.readSwayColordDawn()
+        local sunset  = M.readSwayColordDusk()
+        if now < sunrise or now > sunset then
+            night()
+        else
+            day()
+        end
     end
 end
 
@@ -112,7 +137,7 @@ end
 local function nap_timeRigid()
     local morn = morning * 3600
     local nigh = night * 3600
-    local ct = currentTime()
+    local ct = M.currentTime()
 
     local count_down = (function()
         if ct < morn then
@@ -136,23 +161,18 @@ local function nap_timeRigid()
 end
 
 local function nap_timeSwayColord()
-    local sunrise_h, sunrise_m,sunrise_s = readSwayColordTmp('dawn')
-    local sunrise_secs = toSecs(sunrise_h, sunrise_m, sunrise_s)
-    local sunset_h, sunset_m,sunset_s = readSwayColordTmp('dusk')
-    local sunset_secs = toSecs(sunset_h, sunset_m, sunset_s)
-    local current_h = tonumber(os.date("%H"))
-    local current_m = tonumber(os.date("%M"))
-    local current_s = tonumber(os.date("%S"))
-    local now = toSecs(current_h, current_m, current_s)
+    local sunrise = M.readSwayColordDawn()
+    local sunset  = M.readSwayColordDusk()
+    local now = M.currentTime()
 
     local count_down = (function()
-        if current_h < sunrise_h then
-            return sunrise_secs - now
-        elseif current_h >= sunrise_h and current_h < sunset_h then
-            return sunset_secs - now
+        if now < sunrise then
+            return sunrise - now
+        elseif now >= sunrise and now < sunset then
+            return sunset - now
         else
             -- 86400 is amount a seconds in a day
-            return (86400 - now) + sunrise_secs
+            return (86400 - now) + sunrise
         end
     end)()
 
@@ -242,31 +262,22 @@ local main_loop = function(f)
 end
 
 --- Set initial colorscheme, and change colorscheme at day and night
-M.colorschemeManager = function()
+M.colorschemeManager = function(day, night)
     return wrap(wrapHelper)(function()
-        M.initColorscheme()
+        M.day_and_night(lightColors, darkColors)
+        if day ~= nil and night ~= nil then
+            M.day_and_night(day, night)
+        end
         while true do
             await(timer())
             await(main_loop)
-            M.changeColors()
+            M.day_and_night(lightColors, darkColors)
+            if day ~= nil and night ~= nil then
+                M.day_and_night(day, night)
+            end
         end
     end)
 end
 
-M.sunrise_and_sunset = function()
-    local sunrise_h, sunrise_m, sunrise_s = readSwayColordTmp('dawn')
-    local sunset_h,  sunset_m,   sunset_s = readSwayColordTmp('dusk')
-    local sunrise = {
-	hours = sunrise_h,
-	minutes = sunrise_m,
-	seconds = sunrise_s
-    }
-    local sunset = {
-	hours = sunset_h,
-	minutes = sunset_m,
-	seconds = sunset_s
-    }
-    return sunrise, sunset    
-end
 
 return M
