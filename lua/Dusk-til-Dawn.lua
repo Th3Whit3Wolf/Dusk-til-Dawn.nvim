@@ -253,4 +253,20 @@ M.colorschemeManager = function()
     end)
 end
 
+M.sunrise_and_sunset = function()
+    local sunrise_h, sunrise_m, sunrise_s = readSwayColordTmp('dawn')
+    local sunset_h,  sunset_m,   sunset_s = readSwayColordTmp('dusk')
+    local sunrise = {
+	hours = sunrise_h,
+	minutes = sunrise_m,
+	seconds = sunrise_s
+    }
+    local sunset = {
+	hours = sunset_h,
+	minutes = sunset_m,
+	seconds = sunset_s
+    }
+    return sunrise, sunset    
+end
+
 return M
