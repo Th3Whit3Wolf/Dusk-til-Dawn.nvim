@@ -10,7 +10,7 @@ Automatically change colorscheme based on time
 Plug 'Th3Whit3Wolf/Dusk-til-Dawn.nvim'
 
 " And then somewhere in your init.vim
-lua require'Dusk-til-Dawn'.colorschemeManager()()
+lua require'Dusk-til-Dawn'.timeMan()()
 ```
 
 ### Minpac
@@ -19,7 +19,7 @@ lua require'Dusk-til-Dawn'.colorschemeManager()()
 call minpac#add('Th3Whit3Wolf/Dusk-til-Dawn.nvim')
 
 " And then somewhere in your init.vim
-lua require'Dusk-til-Dawn'.colorschemeManager()()
+lua require'Dusk-til-Dawn'.timeMan()()
 ```
 
 ### Vim Packages
@@ -35,7 +35,7 @@ In your `init.vim` add the following
 
 ```vim
 " And then somewhere in your init.vim after the above command
-lua require'Dusk-til-Dawn'.colorschemeManager()()
+lua require'Dusk-til-Dawn'.timeMan()()
 ```
 
 ## Configuration
@@ -61,7 +61,7 @@ If you use [Sway Color Daemon](https://github.com/Th3Whit3Wolf/sway-colord) you 
 ## How to do more than set colors
 
 ```lua
-require("Dusk-til-Dawn").colorschemeManager(
+require("Dusk-til-Dawn").timeMan(
     function()
         require('indent_guides').setup(
     {
