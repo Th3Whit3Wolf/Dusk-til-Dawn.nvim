@@ -261,8 +261,8 @@ local main_loop = function(f)
     vim.schedule(f)
 end
 
---- Set initial colorscheme, and change colorscheme at day and night
-M.colorschemeManager = function(day, night)
+--- Manages what to do in day and night times 
+M.timeMan = function(day, night)
     return wrap(wrapHelper)(function()
         M.day_and_night(lightColors, darkColors)
         if day ~= nil and night ~= nil then
