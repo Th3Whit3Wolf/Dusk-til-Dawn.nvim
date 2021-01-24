@@ -104,8 +104,8 @@ end
 
 -- Runs a function durring the day
 -- and another function durring the night
-function M.day_and_night(day, night)
-    if type(day) ~= 'function' or type(night) ~= 'function' then
+function M.day_and_night(day_func, night_func)
+    if type(day_func) ~= 'function' or type(night_func) ~= 'function' then
         print('Error: day_and_night takes 2 functions, but received ' .. type(day) .. ' and ' .. type(night) .. '!')
         return
     end
@@ -115,17 +115,17 @@ function M.day_and_night(day, night)
         local nigh = night * 3600
         
         if now < morn or now > nigh then
-            night()
+            night_func()
         else
-            day()
+            day_func()
         end
     else
         local sunrise = M.readSwayColordDawn()
         local sunset  = M.readSwayColordDusk()
         if now < sunrise or now > sunset then
-            night()
+            night_func()
         else
-            day()
+            day_func()
         end
     end
 end
