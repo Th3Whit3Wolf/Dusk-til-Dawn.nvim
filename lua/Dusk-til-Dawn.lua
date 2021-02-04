@@ -97,9 +97,6 @@ function M.changeColors()
     else
         lightColors()
     end
-    if vim.g.loaded_galaxyline == 1 then
-        require("galaxyline").load_galaxyline()
-    end
 end
 
 -- Runs a function durring the day
