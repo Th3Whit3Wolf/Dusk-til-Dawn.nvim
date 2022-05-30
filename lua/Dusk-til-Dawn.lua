@@ -80,12 +80,14 @@ end
 
 --- Set the light colorscheme
 local function lightColors()
+    if vim.api.nvim_get_option('background') == 'light' then return end
     vim.o.background = 'light'
     vim.cmd('colorscheme ' .. light_theme_colorscheme)
 end
 
 --- Set the dark colorscheme
 local function darkColors()
+    if vim.api.nvim_get_option('background') == 'dark' then return end
     vim.o.background = 'dark'
     vim.cmd('colorscheme ' .. dark_theme_colorscheme)
 end
